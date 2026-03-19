@@ -7,7 +7,7 @@
     headers.set("Content-Type", "application/json");
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? process.env.API_URL ?? "";
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${baseUrl}${path}`, {
     credentials: "include",
     ...options,
