@@ -7,6 +7,7 @@ const LOGIN_PATH = "TODO";
 const LOGOUT_PATH = "TODO";
 const ME_PATH = "TODO";
 
+// Funciones para manejar la autenticación del usuario, incluyendo login, logout y obtener la sesión actual
 export async function login(email: string, password: string) {
   const res = await apiFetch<{ success: boolean }>(LOGIN_PATH, {
     method: "POST",

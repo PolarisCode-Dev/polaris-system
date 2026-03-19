@@ -1,4 +1,6 @@
-﻿export async function apiFetch<T>(
+﻿// Función para realizar peticiones a la API con manejo de errores y configuración de encabezados
+
+export async function apiFetch<T>(
   path: string,
   options?: RequestInit,
 ): Promise<T> {
