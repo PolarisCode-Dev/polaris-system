@@ -12,12 +12,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        //logica
+        //TODO
     }
 
+    //Función para crear un nuevo usuario
     public function store(Request $request)
     {
-        // Validación básica
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -25,7 +25,6 @@ class UserController extends Controller
             'company_id' => 'required'
         ]);
 
-        // Crear usuario con password hasheado
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -34,19 +33,19 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Usuario creado correctamente',
+            'message' => 'User created successfully.',
             'user' => $user
         ], 201);
     }
 
-
+    //Función para mostrar los detalles de un usuario específico
     public function show($id)
     {
         $user = User::find($id);
 
         if (!$user) {
             return response()->json([
-                'message' => 'Usuario no encontrado.',
+                'message' => 'User not found.',
                 'data' => null,
             ], 404);
         }
@@ -54,18 +53,18 @@ class UserController extends Controller
         $user->load('company');
 
         return response()->json([
-            'message' => 'Usuario obtenido exitosamente.',
+            'message' => 'User retrieved successfully.',
             'data' => new UserResource($user),
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        //logica
+        //TODO
     }
 
     public function destroy($id)
     {
-        //logica
+        //TODO
     }
 }

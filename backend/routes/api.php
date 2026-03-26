@@ -6,13 +6,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 
 Route::post('login', [AuthController::class, 'login']);
-Route::Resource('users', UserController::class, ['except' => ['create']]);
 
 
 Route::middleware('auth:api')->group(function () {
     //Rutas para autenticación
     Route::get('me', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::Resource('users', UserController::class, ['except' => ['create']]);
 
     //users
 
