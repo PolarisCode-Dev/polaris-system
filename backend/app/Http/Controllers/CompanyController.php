@@ -13,9 +13,10 @@ class CompanyController extends Controller
     public function index()
     {
         return response()->json([
-            'message' => 'Lista de compañías cargadas.',
+            'status' => 200,
+            'message' => 'Companies loaded successfully.',
             'data' => CompanyResource::collection(Company::orderBy('id', 'desc')->get()),
-        ]);
+        ], 200);
     }
 
     public function store(StoreCompanyRequest $request)
@@ -25,7 +26,8 @@ class CompanyController extends Controller
         $company = Company::create($validated);
 
         return response()->json([
-            'message' => 'Compañía creada exitosamente.',
+            'status' => 201,
+            'message' => 'Company created successfully.',
             'data' => new CompanyResource($company),
         ], 201);
     }
@@ -33,9 +35,10 @@ class CompanyController extends Controller
     public function show(Company $company)
     {
         return response()->json([
-            'message' => 'Compañía obtenida exitosamente.',
+            'status' => 200,
+            'message' => 'Company retrieved successfully.',
             'data' => new CompanyResource($company),
-        ]);
+        ], 200);
     }
 
     public function update(UpdateCompanyRequest $request, Company $company)
@@ -45,9 +48,10 @@ class CompanyController extends Controller
         $company->update($validated);
 
         return response()->json([
-            'message' => 'Compañía actualizada exitosamente.',
+            'status' => 200,
+            'message' => 'Company updated successfully.',
             'data' => new CompanyResource($company),
-        ]);
+        ], 200);
     }
 
     public function destroy(Company $company)
@@ -56,8 +60,9 @@ class CompanyController extends Controller
         $company->delete();
 
         return response()->json([
-            'message' => 'Compañía eliminada exitosamente.',
+            'status' => 200,
+            'message' => 'Company deleted successfully.',
             'data' => $companyResource,
-        ]);
+        ], 200);
     }
 }

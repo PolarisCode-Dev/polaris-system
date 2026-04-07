@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Response;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +14,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        //logica
+        $users = User::with('company')->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Users retrieved successfully.',
+            'data' => UserResource::collection($users),
+        ], 200);
     }
 
     public function store(Request $request)
@@ -34,38 +42,54 @@ class UserController extends Controller
         ]);
 
         return response()->json([
-            'message' => 'Usuario creado correctamente',
-            'user' => $user
+            'status' => 201,
+            'message' => 'User created successfully.',
+            'data' => $user,
         ], 201);
     }
 
 
     public function show($id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'message' => 'Usuario no encontrado.',
-                'data' => null,
-            ], 404);
-        }
-
-        $user->load('company');
+        $user = User::with('company')->findOrFail($id);
 
         return response()->json([
-            'message' => 'Usuario obtenido exitosamente.',
+            'status' => 200,
+            'message' => 'User retrieved successfully.',
             'data' => new UserResource($user),
-        ]);
+        ], 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        //logica
+        $user = User::findOrFail($id);
+
+        $user->fill($request->validated());
+
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'User updated successfully.',
+            'data' => new UserResource($user->load('company')),
+        ], 200);
     }
 
     public function destroy($id)
     {
-        //logica
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'User deleted successfully.',
+            'data' => null,
+        ], 200);
     }
 }
+
