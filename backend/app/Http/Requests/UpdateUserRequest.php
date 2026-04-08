@@ -17,10 +17,10 @@ class UpdateUserRequest extends FormRequest
         $userId = $this->route('id');
 
         return [
-            'name'       => 'sometimes|required|string|max:255',
-            'email'      => 'sometimes|required|string|email|max:255|unique:users,email,' . $userId,
-            'password'   => 'sometimes|required|string|min:6',
-            'company_id' => 'sometimes|required|exists:companies,id',
+            'name'       => 'required|string|max:255',
+            'email'      => 'required|string|email|max:255|unique:users,email,' . $userId,
+            'password'   => 'required|string|min:6',
+            'company_id' => 'required|exists:companies,id',
         ];
     }
 }

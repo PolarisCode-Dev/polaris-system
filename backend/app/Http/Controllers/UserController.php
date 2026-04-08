@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Response;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Http\Requests\UpdateUserRequest;
@@ -44,7 +43,7 @@ class UserController extends Controller
         return response()->json([
             'status' => 201,
             'message' => 'User created successfully.',
-            'data' => $user,
+            'data' => new UserResource($user->load('company')),
         ], 201);
     }
 

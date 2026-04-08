@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -40,30 +42,41 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        $status = 500;
-        $message = 'Internal server error';
+        $response = parent::render($request, $exception);
+
+        if (! $request->expectsJson()) {
+            return $response;
+        }
+
+        $status = $response->getStatusCode();
+        $message = Response::$statusTexts[$status] ?? 'HTTP error';
         $data = null;
 
         if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
-            $status = 404;
             $message = 'Resource not found';
         } elseif ($exception instanceof \Illuminate\Validation\ValidationException) {
-            $status = 422;
             $message = 'Validation failed';
             $data = $exception->errors();
-        } elseif ($exception instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-            $status = $exception->getStatusCode();
-            $message = $exception->getMessage() ?: 'HTTP error';
+        } elseif ($response instanceof JsonResponse) {
+            $payload = $response->getData(true);
+
+            if (is_array($payload)) {
+                if (isset($payload['message']) && is_string($payload['message']) && $payload['message'] !== '') {
+                    $message = $payload['message'];
+                }
+
+                if (array_key_exists('errors', $payload)) {
+                    $data = $payload['errors'];
+                } elseif (array_key_exists('data', $payload)) {
+                    $data = $payload['data'];
+                }
+            }
         }
 
-        if ($request->expectsJson()) {
-            return response()->json([
-                'status' => $status,
-                'message' => $message,
-                'data' => $data,
-            ], $status);
-        }
-
-        return parent::render($request, $exception);
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+        ], $status, $response->headers->all());
     }
 }
