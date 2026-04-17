@@ -63,11 +63,13 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $user->fill($request->validated());
+        $validated = $request->validated();
 
-        if ($request->filled('password')) {
-            $user->password = Hash::make($request->password);
+        if (! $request->filled('password')) {
+            unset($validated['password']);
         }
+
+        $user->fill($validated);
 
         $user->save();
 
