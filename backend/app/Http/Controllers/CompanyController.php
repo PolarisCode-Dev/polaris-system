@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 
 class CompanyController extends Controller
 {
+    //Función para listar todas las compañías
     public function index()
     {
         return response()->json([
@@ -19,6 +20,7 @@ class CompanyController extends Controller
         ], 200);
     }
 
+    //Función para crear una nueva compañía
     public function store(StoreCompanyRequest $request)
     {
         $validated = $request->validated();
@@ -32,6 +34,7 @@ class CompanyController extends Controller
         ], 201);
     }
 
+    //Función para mostrar los detalles de una compañía específica
     public function show(Company $company)
     {
         return response()->json([
@@ -41,6 +44,7 @@ class CompanyController extends Controller
         ], 200);
     }
 
+    //Función para actualizar los detalles de una compañía específica
     public function update(UpdateCompanyRequest $request, Company $company)
     {
         $validated = $request->validated();
@@ -54,6 +58,7 @@ class CompanyController extends Controller
         ], 200);
     }
 
+    //Función para eliminar una compañía específica
     public function destroy(Company $company)
     {
         $companyResource = new CompanyResource($company);

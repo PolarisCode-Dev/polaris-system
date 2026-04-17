@@ -22,9 +22,9 @@ class UserController extends Controller
         ], 200);
     }
 
+    //Función para crear un nuevo usuario
     public function store(Request $request)
     {
-        // Validación básica
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
@@ -32,7 +32,6 @@ class UserController extends Controller
             'company_id' => 'required'
         ]);
 
-        // Crear usuario con password hasheado
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -47,7 +46,7 @@ class UserController extends Controller
         ], 201);
     }
 
-
+    //Función para mostrar los detalles de un usuario específico
     public function show($id)
     {
         $user = User::with('company')->findOrFail($id);

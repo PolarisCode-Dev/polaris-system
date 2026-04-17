@@ -11,6 +11,7 @@ Route::middleware('auth:api')->group(function () {
     //Rutas para autenticación
     Route::get('me', [AuthController::class, 'me']);
     Route::post('logout', [AuthController::class, 'logout']);
+    Route::Resource('users', UserController::class, ['except' => ['create']]);
 
     //users
     Route::Resource('users', UserController::class, ['except' => ['create']]);
