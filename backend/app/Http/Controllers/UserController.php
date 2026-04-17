@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -12,7 +13,13 @@ class UserController extends Controller
 {
     public function index()
     {
-        //TODO
+        $users = User::with('company')->get();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Users retrieved successfully.',
+            'data' => UserResource::collection($users),
+        ], 200);
     }
 
     //Función para crear un nuevo usuario
@@ -33,38 +40,56 @@ class UserController extends Controller
         ]);
 
         return response()->json([
+            'status' => 201,
             'message' => 'User created successfully.',
-            'user' => $user
+            'data' => new UserResource($user->load('company')),
         ], 201);
     }
 
     //Función para mostrar los detalles de un usuario específico
     public function show($id)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'message' => 'User not found.',
-                'data' => null,
-            ], 404);
-        }
-
-        $user->load('company');
+        $user = User::with('company')->findOrFail($id);
 
         return response()->json([
+            'status' => 200,
             'message' => 'User retrieved successfully.',
             'data' => new UserResource($user),
-        ]);
+        ], 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
-        //TODO
+        $user = User::findOrFail($id);
+
+        $validated = $request->validated();
+
+        if (! $request->filled('password')) {
+            unset($validated['password']);
+        }
+
+        $user->fill($validated);
+
+        $user->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'User updated successfully.',
+            'data' => new UserResource($user->load('company')),
+        ], 200);
     }
 
     public function destroy($id)
     {
-        //TODO
+        $user = User::findOrFail($id);
+
+        $user->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'User deleted successfully.',
+            'data' => null,
+        ], 200);
     }
 }
+

@@ -14,9 +14,10 @@ class CompanyController extends Controller
     public function index()
     {
         return response()->json([
-            'message' => 'List of companies retrieved successfully.',
+            'status' => 200,
+            'message' => 'Companies loaded successfully.',
             'data' => CompanyResource::collection(Company::orderBy('id', 'desc')->get()),
-        ]);
+        ], 200);
     }
 
     //Función para crear una nueva compañía
@@ -27,6 +28,7 @@ class CompanyController extends Controller
         $company = Company::create($validated);
 
         return response()->json([
+            'status' => 201,
             'message' => 'Company created successfully.',
             'data' => new CompanyResource($company),
         ], 201);
@@ -36,9 +38,10 @@ class CompanyController extends Controller
     public function show(Company $company)
     {
         return response()->json([
+            'status' => 200,
             'message' => 'Company retrieved successfully.',
             'data' => new CompanyResource($company),
-        ]);
+        ], 200);
     }
 
     //Función para actualizar los detalles de una compañía específica
@@ -49,9 +52,10 @@ class CompanyController extends Controller
         $company->update($validated);
 
         return response()->json([
+            'status' => 200,
             'message' => 'Company updated successfully.',
             'data' => new CompanyResource($company),
-        ]);
+        ], 200);
     }
 
     //Función para eliminar una compañía específica
@@ -61,8 +65,9 @@ class CompanyController extends Controller
         $company->delete();
 
         return response()->json([
+            'status' => 200,
             'message' => 'Company deleted successfully.',
             'data' => $companyResource,
-        ]);
+        ], 200);
     }
 }
